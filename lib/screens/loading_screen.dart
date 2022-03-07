@@ -1,50 +1,48 @@
-import 'dart:convert';
-
+import 'package:clima_flutter_new/screens/location_screen.dart';
 import 'package:clima_flutter_new/services/location.dart';
+import 'package:clima_flutter_new/services/networking.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({Key? key}) : super(key: key);
+
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  void getLocation() async {
-    Location l = Location();
-    l.getCurrentLocation();
-    getData();
-  }
-
-  Uri url = Uri.parse(
-      'https://api.openweathermap.org/data/2.5/weather?lat=23.7266214&lon=89.761393&appid=eca3e85d739a2706e48286ace306f97d');
-  void getData() async {
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      String cityName = data['name'];
-      double temp = data['main']['temp'];
-      String description = data['weather'][0]['description'];
-      print("temp: $temp $cityName $description");
-    } else
-      print(response.statusCode);
-  }
-
   @override
   void initState() {
     getLocation();
     super.initState();
   }
 
+  void getLocation() async {
+    Location l = Location();
+    await l.getCurrentLocation();
+    NetworkHelper networkHelper = NetworkHelper(
+        url:
+            'https://api.openweathermap.org/data/2.5/weather?lat=${l.latitude}&lon=${l.longitude}&appid=eca3e85d739a2706e48286ace306f97d&units=metric');
+    var weatherData = await networkHelper.getData();
+    // print(weatherData);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationScreen(
+          weatherData: weatherData,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            //Get the current location
-          },
-          child: const Text('Get Location'),
+        child: SpinKitFadingCube(
+          color: Colors.white,
+          size: 50.0,
         ),
       ),
     );
