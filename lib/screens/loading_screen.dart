@@ -25,7 +25,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       String cityName = data['name'];
       double temp = data['main']['temp'];
       String description = data['weather'][0]['description'];
-      print("$temp $cityName $description");
+      print("temp: $temp $cityName $description");
     } else
       print(response.statusCode);
   }
