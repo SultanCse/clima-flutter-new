@@ -88,7 +88,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: const EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "${WeatherModel().getMessage(temp!.toInt())} ${description!}  in $cityName",
+                  "${WeatherModel().getMessage(temp!)} ${description!}  in $cityName",
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
